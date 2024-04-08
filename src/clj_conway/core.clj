@@ -1,5 +1,5 @@
 (ns clj-conway.core
-  (:require [seesaw.core :refer [border-panel canvas frame invoke-later label select timer width height native! repaint! show!]]
+  (:require [seesaw.core :refer [border-panel canvas frame invoke-later listen select timer width height native! repaint! show!]]
             [seesaw.graphics :refer [draw rect style]]
             [seesaw.config :refer [config!]]))
 
@@ -22,7 +22,11 @@
     (set)
     ))
 
-(def points (atom #{[0 1] [1 2] [2 0] [2 1] [2 2]}))
+(defn get-pt [e cell-size]
+  [(int (/ (.getX e) cell-size))
+   (int (/ (.getY e) cell-size))])
+
+(def points (atom #{[1 1] [2 1] [3 1] [1 2] [1 3] [2 3] [3 2] [3 3]}))
 
 (defn draw-grid [c g cell-size points]
   (let [rows (quot (width c) cell-size)
@@ -38,29 +42,46 @@
                                  (even? (+ x y)) "#323232"))))))
 
 (defn init-ui []
-  (println "initializing UI...")
   (let [frame
        (frame :title "clj-conway"
-              :size [500 :by 500]
+              :size [800 :by 600]
               :on-close :exit
-              :content (border-panel
-                          :center (canvas :id :canvas
-                                          :background "#121212")))]
+              :content
+                (border-panel
+                  :center (canvas :id :canvas
+                                  :background "#121212")))]
     (native!)
     (invoke-later
       (-> frame
-          ; pack!
           show!))
     frame))
 
 (defn run-ui [root]
-  (println "running UI...")
-  (let [c (select root [:#canvas])
-        _t (timer (fn [_]
+  (let [cell-size 10
+        ms_inc 400
+        c (select root [:#canvas])
+        t (timer (fn [_]
                     (swap! points transform)
                     (repaint! c))
-                  :delay 500)]
-    (config! c :paint #(draw-grid %1 %2 10 @points))))
+                  :start? false
+                  :initial-delay ms_inc
+                  :delay ms_inc)]
+    (listen c
+      :mouse-clicked
+        (fn [e]
+          (let [pt (get-pt e cell-size)]
+            (if (contains? @points pt)
+              (swap! points disj pt)
+              (swap! points conj pt))
+            (repaint! c))))
+    (listen root
+      :key-pressed
+        (fn [e]
+          (when (= (.getKeyCode e) 32)
+            (if (.isRunning t)
+              (.stop t)
+              (.start t)))))
+    (config! c :paint #(draw-grid %1 %2 cell-size @points))))
 
-(defn -main [& args]
+(defn -main []
   (-> (init-ui) run-ui))
