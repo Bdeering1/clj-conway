@@ -1,22 +1,18 @@
 # clj-conway
 
-A Clojure library designed to ... well, that part is up to you.
+[Conway's Game of Life](https://conwaylife.com/wiki/Conway%27s_Game_of_Life) (CGL) implemented in Clojure.
+
+CGL is a discrete event simulation played out on a 2D grid of points (or "cells"), where at any slice of time each cell is either alive or dead. Each iteration, the next state of each cell is determined by a simple set of rules:
+1. Any living cell with less than two neighbours dies due to underpopulation.
+2. Any living cell with more than three neighbours dies due to overpopulation.
+3. Any living cell with two or three neighbours lives on to the next generation.
+4. Any dead cell with exactly three living neighbours will come to life.
 
 ## Usage
 
-FIXME
+To build from source, you'll need [leiningen](https://leiningen.org/).
 
-## License
-
-Copyright © 2024 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+Once installed, cd into the project directory and run using:
+```
+lein run -m clj-conway.core
+```
