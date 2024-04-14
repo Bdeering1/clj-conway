@@ -57,7 +57,7 @@
     frame))
 
 (defn run-ui [root]
-  (let [cell-size 10
+  (let [cell-size 20
         ms_inc 400
         c (select root [:#canvas])
         t (timer (fn [_]
