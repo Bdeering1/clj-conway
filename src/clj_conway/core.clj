@@ -1,4 +1,5 @@
 (ns clj-conway.core
+  (:gen-class)
   (:require [seesaw.core :refer [border-panel canvas frame invoke-later listen select timer width height native! repaint! show!]]
             [seesaw.graphics :refer [draw rect style]]
             [seesaw.config :refer [config!]]))
@@ -26,7 +27,7 @@
   [(int (/ (.getX e) cell-size))
    (int (/ (.getY e) cell-size))])
 
-(def points (atom #{[1 1] [2 1] [3 1] [1 2] [1 3] [2 3] [3 2] [3 3]}))
+(def points (atom #{}))
 
 (defn draw-grid [c g cell-size points]
   (let [rows (quot (width c) cell-size)
