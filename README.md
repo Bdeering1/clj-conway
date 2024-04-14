@@ -18,3 +18,5 @@ Once installed, cd into the project directory and run using:
 ```
 lein run -m clj-conway.core
 ```
+
+Once running, toggle points by clicking on the grid, and play/pause the simulation by pressing space.
