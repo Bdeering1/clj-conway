@@ -10,6 +10,8 @@ CGL is a discrete event simulation played out on a 2D grid of points (or "cells"
 
 ## Usage
 
+Run using the provided jar file (in the "releases" tab), or build from source.
+
 To build from source, you'll need [leiningen](https://leiningen.org/).
 
 Once installed, cd into the project directory and run using:
