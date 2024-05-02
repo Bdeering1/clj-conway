@@ -27,6 +27,7 @@
   [(int (/ (.getX e) cell-size))
    (int (/ (.getY e) cell-size))])
 
+(def achorn (atom #{[62 27] [58 27] [61 27] [60 26] [63 27] [57 27] [58 25]}))
 (def achimsp16
   (atom #{[8 7] [7 12] [10 5] [13 15] [14 17] [15 16] [10 8] [16 7] [15 9] [18 10] [9 6]
           [6 13] [18 9] [16 8] [11 6] [8 15] [13 17] [17 10] [11 7] [9 7] [11 5] [9 13]
@@ -36,6 +37,10 @@
           [37 4] [24 6] [36 4] [26 7] [26 2] [24 2] [18 6] [26 1] [17 4] [23 4] [12 7]
           [36 3] [22 3] [3 6] [37 3] [26 6] [14 3] [2 6] [13 4] [23 3] [22 4] [3 5]
           [17 8] [14 9] [18 5]}))
+(def weekender
+  (atom #{[7 11] [2 8] [10 15] [7 4] [8 3] [5 4] [7 8] [9 16] [10 17] [9 3] [3 13] [5 13]
+          [5 14] [10 2] [5 7] [11 3] [8 16] [2 12] [2 11] [5 6] [6 8] [6 11] [5 5] [7 9]
+          [2 7] [3 6] [5 15] [7 10] [10 4] [6 9] [12 3] [6 10] [7 15] [12 16] [5 12] [11 16]}))
 
 (def points (atom #{}))
 
@@ -55,7 +60,7 @@
 (defn init-ui []
   (let [frame
        (frame :title "clj-conway"
-              :size [800 :by 600]
+              :size [1200 :by 900]
               :on-close :exit
               :content
                 (border-panel
@@ -68,8 +73,8 @@
     frame))
 
 (defn run-ui [root]
-  (let [cell-size 18
-        ms_inc 200
+  (let [cell-size 15
+        ms_inc 180
         c (select root [:#canvas])
         t (timer (fn [_]
                     (swap! points transform)
@@ -102,6 +107,12 @@
             (repaint! c))
           (when (= (.getKeyCode e) 50)
             (reset! points @achimsp16)
+            (repaint! c))
+          (when (= (.getKeyCode e) 51)
+            (reset! points @achorn)
+            (repaint! c))
+          (when (= (.getKeyCode e) 52)
+            (reset! points @weekender)
             (repaint! c))
           (when (= (.getKeyCode e) 80)
             (println @points))
