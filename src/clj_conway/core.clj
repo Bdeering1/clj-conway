@@ -44,7 +44,7 @@
 
 (def points (atom #{}))
 
-(defn draw-grid [c g cell-size points]
+(defn draw-grid [c g cell-size offset-x offset-y points]
   (let [rows (quot (width c) cell-size)
         cols (quot (height c) cell-size)
         w cell-size
@@ -54,7 +54,7 @@
       (draw g
             (rect (* x cell-size) (* y cell-size) w h)
             (style :background (cond
-                                 (contains? points [x y]) "#A03232"
+                                 (contains? points [(+ x offset-x) (+ y offset-y)]) "#A03232"
                                  (even? (+ x y)) "#212121"))))))
 
 (defn init-ui []
@@ -81,7 +81,9 @@
                     (repaint! c))
                   :start? false
                   :initial-delay ms_inc
-                  :delay ms_inc)]
+                  :delay ms_inc)
+        offset-x (atom 0)
+        offset-y (atom 0)]
     (listen c
       :mouse-clicked
         (fn [e]
@@ -95,29 +97,43 @@
     (listen root
       :key-pressed
         (fn [e]
-          (when (= (.getKeyCode e) 32)
+          (when (= (.getKeyCode e) 32) ; space
             (if (.isRunning t)
               (.stop t)
               (.start t)))
-          (when (= (.getKeyCode e) 48)
-            (reset! points #{})
+          (when (= (.getKeyCode e) 37) ; left
+            (reset! offset-x (- @offset-x 5))
             (repaint! c))
-          (when (= (.getKeyCode e) 49)
+          (when (= (.getKeyCode e) 38) ; up 
+            (reset! offset-y (- @offset-y 5))
+            (repaint! c))
+          (when (= (.getKeyCode e) 39) ; right
+            (reset! offset-x (+ @offset-x 5))
+            (repaint! c))
+          (when (= (.getKeyCode e) 40) ; down
+            (reset! offset-y (+ @offset-y 5))
+            (repaint! c))
+          (when (= (.getKeyCode e) 48) ; g
+            (reset! points #{})
+            (reset! offset-x 0)
+            (reset! offset-y 0)
+            (repaint! c))
+          (when (= (.getKeyCode e) 49) ; 1
             (reset! points @gosper_glider)
             (repaint! c))
-          (when (= (.getKeyCode e) 50)
+          (when (= (.getKeyCode e) 50) ; 2
             (reset! points @achimsp16)
             (repaint! c))
-          (when (= (.getKeyCode e) 51)
+          (when (= (.getKeyCode e) 51) ; 3
             (reset! points @achorn)
             (repaint! c))
-          (when (= (.getKeyCode e) 52)
+          (when (= (.getKeyCode e) 52) ; 4
             (reset! points @weekender)
             (repaint! c))
-          (when (= (.getKeyCode e) 80)
+          (when (= (.getKeyCode e) 80) ; p
             (println @points))
           ))
-    (config! c :paint #(draw-grid %1 %2 cell-size @points))))
+    (config! c :paint #(draw-grid %1 %2 cell-size @offset-x @offset-y @points))))
 
 (defn -main []
   (-> (init-ui) run-ui))
