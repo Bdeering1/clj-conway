@@ -83,7 +83,8 @@
                   :initial-delay ms_inc
                   :delay ms_inc)
         offset-x (atom 0)
-        offset-y (atom 0)]
+        offset-y (atom 0)
+        zoom (atom 1)]
     (listen c
       :mouse-clicked
         (fn [e]
@@ -113,10 +114,14 @@
           (when (= (.getKeyCode e) 40) ; down
             (reset! offset-y (+ @offset-y 5))
             (repaint! c))
-          (when (= (.getKeyCode e) 48) ; g
+          (when (and (= (.getKeyCode e) 45) (> @zoom 0.4)) ; minus
+            (reset! zoom (- @zoom 0.1))
+            (repaint! c))
+          (when (and (= (.getKeyCode e) 61) (< @zoom 5)) ; equals
+            (reset! zoom (+ @zoom 0.1))
+            (repaint! c))
+          (when (= (.getKeyCode e) 48) ; 0
             (reset! points #{})
-            (reset! offset-x 0)
-            (reset! offset-y 0)
             (repaint! c))
           (when (= (.getKeyCode e) 49) ; 1
             (reset! points @gosper_glider)
@@ -130,10 +135,20 @@
           (when (= (.getKeyCode e) 52) ; 4
             (reset! points @weekender)
             (repaint! c))
+          (when (= (.getKeyCode e) 67) ; c
+            (reset! offset-x 0)
+            (reset! offset-y 0)
+            (repaint! c))
           (when (= (.getKeyCode e) 80) ; p
             (println @points))
+          (when (= (.getKeyCode e) 82) ; r
+            (reset! points #{})
+            (reset! offset-x 0)
+            (reset! offset-y 0)
+            (reset! zoom 1)
+            (repaint! c))
           ))
-    (config! c :paint #(draw-grid %1 %2 cell-size @offset-x @offset-y @points))))
+    (config! c :paint #(draw-grid %1 %2 (float (* cell-size @zoom)) @offset-x @offset-y @points))))
 
 (defn -main []
   (-> (init-ui) run-ui))
