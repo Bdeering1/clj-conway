@@ -72,6 +72,11 @@
           show!))
     frame))
 
+(defmacro when! [c pred & actions]
+  `(when ~pred
+     ~@actions
+     (repaint! ~c)))
+
 (defn run-ui [root]
   (let [cell-size 15
         ms_inc 180
@@ -102,51 +107,38 @@
             (if (.isRunning t)
               (.stop t)
               (.start t)))
-          (when (= (.getKeyCode e) 37) ; left
-            (reset! offset-x (- @offset-x 5))
-            (repaint! c))
-          (when (= (.getKeyCode e) 38) ; up 
-            (reset! offset-y (- @offset-y 5))
-            (repaint! c))
-          (when (= (.getKeyCode e) 39) ; right
-            (reset! offset-x (+ @offset-x 5))
-            (repaint! c))
-          (when (= (.getKeyCode e) 40) ; down
-            (reset! offset-y (+ @offset-y 5))
-            (repaint! c))
-          (when (and (= (.getKeyCode e) 45) (> @zoom 0.4)) ; minus
-            (reset! zoom (- @zoom 0.1))
-            (repaint! c))
-          (when (and (= (.getKeyCode e) 61) (< @zoom 5)) ; equals
-            (reset! zoom (+ @zoom 0.1))
-            (repaint! c))
-          (when (= (.getKeyCode e) 48) ; 0
+          (when! c (= (.getKeyCode e) 37) ; left
+            (reset! offset-x (- @offset-x 5)))
+          (when! c (= (.getKeyCode e) 38) ; up
+            (reset! offset-y (- @offset-y 5)))
+          (when! c (= (.getKeyCode e) 39) ; right
+            (reset! offset-x (+ @offset-x 5)))
+          (when! c (= (.getKeyCode e) 40) ; down
+            (reset! offset-y (+ @offset-y 5)))
+          (when! c (and (= (.getKeyCode e) 45) (> @zoom 0.4)) ; minus
+            (reset! zoom (- @zoom 0.1)))
+          (when! c (and (= (.getKeyCode e) 61) (< @zoom 5)) ; equals
+            (reset! zoom (+ @zoom 0.1)))
+          (when! c (= (.getKeyCode e) 48) ; 0
+            (reset! points #{}))
+          (when! c (= (.getKeyCode e) 49) ; 1
+            (reset! points @gosper_glider))
+          (when! c (= (.getKeyCode e) 50) ; 2
+            (reset! points @achimsp16))
+          (when! c (= (.getKeyCode e) 51) ; 3
+            (reset! points @achorn))
+          (when! c (= (.getKeyCode e) 52) ; 4
+            (reset! points @weekender))
+          (when! c (= (.getKeyCode e) 67) ; c
+            (reset! offset-x 0)
+            (reset! offset-y 0))
+          (when! c (= (.getKeyCode e) 82) ; r
             (reset! points #{})
-            (repaint! c))
-          (when (= (.getKeyCode e) 49) ; 1
-            (reset! points @gosper_glider)
-            (repaint! c))
-          (when (= (.getKeyCode e) 50) ; 2
-            (reset! points @achimsp16)
-            (repaint! c))
-          (when (= (.getKeyCode e) 51) ; 3
-            (reset! points @achorn)
-            (repaint! c))
-          (when (= (.getKeyCode e) 52) ; 4
-            (reset! points @weekender)
-            (repaint! c))
-          (when (= (.getKeyCode e) 67) ; c
             (reset! offset-x 0)
             (reset! offset-y 0)
-            (repaint! c))
+            (reset! zoom 1))
           (when (= (.getKeyCode e) 80) ; p
             (println @points))
-          (when (= (.getKeyCode e) 82) ; r
-            (reset! points #{})
-            (reset! offset-x 0)
-            (reset! offset-y 0)
-            (reset! zoom 1)
-            (repaint! c))
           ))
     (config! c :paint #(draw-grid %1 %2 (float (* cell-size @zoom)) @offset-x @offset-y @points))))
 
