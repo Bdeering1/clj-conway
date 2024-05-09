@@ -137,6 +137,10 @@
             (reset! offset-x 0)
             (reset! offset-y 0)
             (reset! zoom 1))
+          (when! c (= (.getKeyCode e) 88) ; x
+            (if (< (.getDelay t) ms_inc)
+              (.setDelay t ms_inc)
+              (.setDelay t (float (/ ms_inc 2)))))
           (when (= (.getKeyCode e) 80) ; p
             (println @points))
           ))
