@@ -20,3 +20,18 @@ lein run -m clj-conway.core
 ```
 
 Once running, toggle points by clicking on the grid, and play/pause the simulation by pressing space.
+
+Some other controls:
+
+| Keybind    | Action             |
+|------------|--------------------|
+| ↓, ↑, ←, → | pan                |
+| -, +       | zoom in/out        |
+| 0          | clear grid         |
+| 1-5        | load template      |
+| c          | reset pan (center) |
+| r          | reset pan + zoom   |
+| x          | toggle 2x speed    |
+
+
+*this project was developed using Java Temurin 17, but should work with other versions of Java as well
