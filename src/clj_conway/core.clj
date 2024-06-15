@@ -26,8 +26,7 @@
   [(int (/ (.getX e) cell-size))
    (int (/ (.getY e) cell-size))])
 
-(def achorn (atom #{[62 27] [58 27] [61 27] [60 26] [63 27] [57 27] [58 25]}))
-(def achimsp16
+(def achorn (atom #{[62 27] [58 27] [61 27] [60 26] [63 27] [57 27] [58 25]})) (def achimsp16
   (atom #{[8 7] [7 12] [10 5] [13 15] [14 17] [15 16] [10 8] [16 7] [15 9] [18 10] [9 6]
           [6 13] [18 9] [16 8] [11 6] [8 15] [13 17] [17 10] [11 7] [9 7] [11 5] [9 13]
           [13 16] [14 14] [7 14] [6 12] [16 15] [16 10] [8 14] [8 12] [15 15] [17 8]}))
@@ -123,7 +122,7 @@
             (reset! offset-y (+ @offset-y 5)))
           (when! c (and (= (.getKeyCode e) 45) (> @zoom 0.4)) ; minus
             (reset! zoom (- @zoom 0.1)))
-          (when! c (and (= (.getKeyCode e) 61) (< @zoom 5)) ; equals
+          (when! c (and (= (.getKeyCode e) 61) (< @zoom 5)) ; equals (or +)
             (reset! zoom (+ @zoom 0.1)))
           (when! c (= (.getKeyCode e) 48) ; 0
             (reset! points #{}))
